@@ -10,7 +10,7 @@ def msend(message):
     message = "PRIVMSG %s :%s\r\n" % (CHAN, message)
     s.sendall(message.encode())
 
-HOST="uk.quakenet.org"
+HOST="fr.quakenet.org"
 PORT=6667
 CHAN="#bow@bots"
 NICK="frosty-scout"
@@ -44,8 +44,6 @@ while 1:
         elif "PRIVMSG" in line:
             msg = "".join(line).split(":")
             msg[1] = msg[1].split("!")[0]
-            del(msg[0])
-            print(msg)
             
-            if msg[1]=="tobot":
-                msend("I heard you!")
+            if msg[2]=="snowman":
+                msend("Kill it with fire!")
