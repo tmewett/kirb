@@ -6,8 +6,8 @@ def esend(message):
     s.sendall(message.encode())
     
 def msend(message):
-    print(message)
-    message = "PRIVMSG %s %s\r\n" % (CHAN, message)
+#   print(message)
+    message = "PRIVMSG %s :%s\r\n" % (CHAN, message)
     s.sendall(message.encode())
 
 HOST="uk.quakenet.org"
@@ -30,7 +30,7 @@ while 1:
 
     for line in temp:
         line=line.rstrip()
-#       print(line)
+        print(line)
         line=line.split()
 
         if line[0]=="PING":
