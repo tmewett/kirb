@@ -1,26 +1,28 @@
 import socket
 
-def esend(message, socket):
+def esend(message):
 #   print(message)
     message += "\r\n"
-    socket.send(message.encode())
+    s.sendall(message.encode())
     
-def message(message, channel, socket):
-    message = "PRIVMSG %s %s\r\n" % (channel, message)
-    socket.send(message.encode())
+def msend(message):
+    print(message)
+    message = "PRIVMSG %s %s\r\n" % (CHAN, message)
+    s.sendall(message.encode())
 
-HOST="irc.uk.quakenet.org"
+HOST="uk.quakenet.org"
 PORT=6667
-CHAN="#bow@testing_bots"
-NICK="tobot"
-IDENT="dallas-b"
-REALNAME="Tom's Bot"
+CHAN="#bow@bots"
+NICK="frosty-scout"
+IDENT="frs"
+REALNAME="Frosty Scout"
 readbuffer=""
 
 s=socket.socket()
 s.connect((HOST, PORT))
-esend("NICK %s" % NICK, s)
-esend("USER %s %s bla :%s" % (IDENT, HOST, REALNAME), s)
+esend("NICK %s" % NICK)
+esend("USER %s %s bla :%s" % (IDENT, HOST, REALNAME))
+print("Logged in.")
 while 1:
     readbuffer=readbuffer+s.recv(512).decode()
     temp=readbuffer.split("\n")
@@ -32,18 +34,18 @@ while 1:
         line=line.split()
 
         if line[0]=="PING":
-            esend("PONG %s" % line[1], s)
+            esend("PONG %s" % line[1])
             print("Sent PONG.")
 
         elif "/MOTD" in line:
-            esend('JOIN '+CHAN, s)
+            esend('JOIN '+CHAN)
             print("Joining %s..." % CHAN)
 
         elif "PRIVMSG" in line:
             msg = "".join(line).split(":")
             msg[1] = msg[1].split("!")[0]
-            msg.remove("")
+            del(msg[0])
             print(msg)
             
             if msg[1]=="tobot":
-                message("I heard you!", CHAN,s)
+                msend("I heard you!")
