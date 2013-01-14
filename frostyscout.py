@@ -1,4 +1,6 @@
 import socket
+import urllib.request
+import json
 
 def esend(message):
 #   print(message)
@@ -25,7 +27,7 @@ esend("USER %s %s bla :%s" % (IDENT, HOST, REALNAME))
 print("Logged in.")
 
 while 1:
-    readbuffer=readbuffer+s.recv(512).decode()
+    readbuffer=readbuffer+s.recv(1024).decode()
     temp=readbuffer.split("\n")
     readbuffer=temp.pop()
 
@@ -46,3 +48,7 @@ while 1:
             
             if line[3]==":snowman":
                 msend("Kill it with fire!")
+                
+            elif len(line)>3 and line[3]==":!stalk":
+                p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % line[4]).read().decode())
+                msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
