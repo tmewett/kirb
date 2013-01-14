@@ -23,6 +23,7 @@ s.connect((HOST, PORT))
 esend("NICK %s" % NICK)
 esend("USER %s %s bla :%s" % (IDENT, HOST, REALNAME))
 print("Logged in.")
+
 while 1:
     readbuffer=readbuffer+s.recv(512).decode()
     temp=readbuffer.split("\n")
@@ -30,7 +31,7 @@ while 1:
 
     for line in temp:
         line=line.rstrip()
-        print(line)
+#       print(line)
         line=line.split()
 
         if line[0]=="PING":
@@ -42,8 +43,6 @@ while 1:
             print("Joining %s..." % CHAN)
 
         elif "PRIVMSG" in line:
-            msg = "".join(line).split(":")
-            msg[1] = msg[1].split("!")[0]
             
-            if msg[2]=="snowman":
+            if line[3]==":snowman":
                 msend("Kill it with fire!")
