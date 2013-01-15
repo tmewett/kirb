@@ -50,5 +50,7 @@ while 1:
                 msend("Kill it with fire!")
                 
             elif len(line)>3 and line[3]==":!stalk":
-                p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % line[4]).read().decode())
-                msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
+                try:
+                    p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % line[4]).read().decode())
+                    msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
+                except urllib.request.HTTPError: msend("Can't find user!")
