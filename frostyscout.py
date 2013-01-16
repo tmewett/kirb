@@ -1,6 +1,7 @@
 import socket
 import urllib.request
 import json
+import re
 
 def esend(message):
 #   print(message)
@@ -34,23 +35,24 @@ while 1:
     for line in temp:
         line=line.rstrip()
 #       print(line)
-        line=line.split()
 
-        if line[0]=="PING":
-            esend("PONG %s" % line[1])
+        if line[0:4]=="PING":
+            esend("PONG %s" % line[6:])
             print("Sent PONG.")
 
         elif "/MOTD" in line:
             esend('JOIN '+CHAN)
             print("Joining %s..." % CHAN)
 
-        elif "PRIVMSG" in line:
+        elif ':!' in line:
             
-            if line[3]==":snowman":
+            cmd = re.search(r":!(\w+) ?(.+)?$", line)
+            
+            if cmd.group(1)=="snowman":
                 msend("Kill it with fire!")
                 
-            elif len(line)>3 and line[3]==":!stalk":
+            elif cmd.group(1)=="stalk":
                 try:
-                    p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % line[4]).read().decode())
+                    p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % cmd.group(2)).read().decode())
                     msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
                 except urllib.request.HTTPError: msend("Can't find user!")
