@@ -38,7 +38,8 @@ while 1:
             print("Joining %s..." % CHAN)
         elif ':!' in line:
             cmd = re.search(r":!(\w+) ?(.+)?$", line)
-            if cmd.group(1)=="snowman":
+            if cmd==None: pass
+            elif cmd.group(1)=="snowman":
                 msend("Kill it with fire!")
             elif cmd.group(1)=="stalk":
                 try:
