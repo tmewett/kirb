@@ -9,6 +9,16 @@ def esend(message):
 def msend(message):
     message = "PRIVMSG %s :%s\r\n" % (CHAN, message)
     s.sendall(message.encode())
+def stalk(player):
+    try:
+        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % player).read().decode())
+        msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
+    except urllib.request.HTTPError: msend("Can't find user!")
+def info(ip):
+    try:
+        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % ip).read().decode())
+        msend("%s has %s/%s connected players and is running %s" % (p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
+    except urllib.request.HTTPError: msend("Can't find server!")
 
 HOST="fr.quakenet.org"
 PORT=6667
@@ -38,19 +48,9 @@ while 1:
         elif ':!' in line:
             cmd = re.search(r":!(\w+) ?(.+)?$", line)
             if cmd==None: pass
-            elif cmd.group(1)=="snowman":
-                msend("Kill it with fire!")
-            elif cmd.group(1)=="stalk":
-                try:
-                    p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % cmd.group(2)).read().decode())
-                    msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
-                except urllib.request.HTTPError: msend("Can't find user!")
+            elif cmd.group(1)=="stalk": stalk(cmd.group(2))
             elif cmd.group(1)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !snowman: Advice")
-            elif cmd.group(1)=="info":
-                try:
-                    p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % cmd.group(2)).read().decode())
-                    msend("%s has %s/%s connected players and is running %s" % (p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
-                except urllib.request.HTTPError: msend("Can't find server!")
+            elif cmd.group(1)=="info": info(cmd.group(2))
             elif cmd.group(1)=="move":
                 esend("PART "+CHAN)
                 CHAN = cmd.group(2)

@@ -3,7 +3,6 @@ KAG-IRC bridge for easy server moderation. Derived from the utility used by the 
 
 ## What `x` it do? ##
 ### x = does ###
-- `!snowman` Sends "Kill it with fire!" Used for testing
 - `!stalk <player>` Gives info about player (last update, server, etc.)
 - `!info <ip>` Gives info about server (name, player count, etc.)
 - `!nick <name>` Changes nickname to <name>
