@@ -46,6 +46,7 @@ while 1:
                     p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % cmd.group(2)).read().decode())
                     msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
                 except urllib.request.HTTPError: msend("Can't find user!")
+            elif cmd.group(1)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !snowman: Advice")
             elif cmd.group(1)=="info":
                 try:
                     p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % cmd.group(2)).read().decode())
