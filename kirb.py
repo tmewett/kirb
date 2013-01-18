@@ -3,6 +3,12 @@ import urllib.request
 import json
 import re
 
+##### SETTINGS #####
+HOST="fr.quakenet.org" # IRC server host
+PORT=6667 # IRC port
+CHAN="#bow@bots" # Channel to join
+ADMIN="tmewett" # User who can use administrative commands
+
 def esend(message):
     message += "\r\n"
     s.sendall(message.encode())
@@ -21,19 +27,12 @@ def info(ip):
         msend("%s has %s/%s connected players and is running %s" % (p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
     except: msend("Can't find server!")
 
-HOST="fr.quakenet.org"
-ADMIN="tmewett"
-PORT=6667
-CHAN="#bow@bots"
-NICK="kirbot"
-IDENT="kirb"
-readbuffer=""
-
 s=socket.socket()
 s.connect((HOST, PORT))
-esend("NICK %s" % NICK)
-esend("USER %s %s bla :tmewett/kirb" % (IDENT, HOST))
+esend("NICK kirbot")
+esend("USER kirb %s bla :tmewett/kirb" % HOST)
 print("Logged in.")
+readbuffer=""
 while 1:
     readbuffer=readbuffer+s.recv(1024).decode()
     temp=readbuffer.split("\n")
@@ -51,10 +50,10 @@ while 1:
             cmd = re.search(r"^:([^!]+)!.+?:!(\w+) ?(.+)?$", line)
             if cmd==None: pass
             elif cmd.group(2)=="stalk": stalk(cmd.group(3))
-            elif cmd.group(2)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !snowman: Advice")
+            elif cmd.group(2)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !nick <name>: Changes nickname (ADMIN only); !move #<channel>: Moves channel (ADMIN only)")
             elif cmd.group(2)=="info": info(cmd.group(3))
             elif cmd.group(2)=="move" and cmd.group(1)==ADMIN:
                 esend("PART "+CHAN)
-                CHAN = cmd.group(2)
+                CHAN = cmd.group(3)
                 esend("JOIN "+CHAN)
             elif cmd.group(2)=="nick" and cmd.group(1)==ADMIN: esend("NICK "+cmd.group(3))
