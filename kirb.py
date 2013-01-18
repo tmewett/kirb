@@ -13,15 +13,14 @@ def msend(message):
 HOST="fr.quakenet.org"
 PORT=6667
 CHAN="#bow@bots"
-NICK="frosty-scout"
-IDENT="frs"
-REALNAME="Frosty Scout"
+NICK="kirbot"
+IDENT="kirb"
 readbuffer=""
 
 s=socket.socket()
 s.connect((HOST, PORT))
 esend("NICK %s" % NICK)
-esend("USER %s %s bla :%s" % (IDENT, HOST, REALNAME))
+esend("USER %s %s bla :tmewett/kirb" % (IDENT, HOST))
 print("Logged in.")
 while 1:
     readbuffer=readbuffer+s.recv(1024).decode()
