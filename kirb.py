@@ -22,6 +22,7 @@ def info(ip):
     except: msend("Can't find server!")
 
 HOST="fr.quakenet.org"
+ADMIN="tmewett"
 PORT=6667
 CHAN="#bow@bots"
 NICK="kirbot"
@@ -47,13 +48,13 @@ while 1:
             esend('JOIN '+CHAN)
             print("Joining %s..." % CHAN)
         elif ':!' in line:
-            cmd = re.search(r":!(\w+) ?(.+)?$", line)
+            cmd = re.search(r"^:([^!]+)!.+?:!(\w+) ?(.+)?$", line)
             if cmd==None: pass
-            elif cmd.group(1)=="stalk": stalk(cmd.group(2))
-            elif cmd.group(1)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !snowman: Advice")
-            elif cmd.group(1)=="info": info(cmd.group(2))
-            elif cmd.group(1)=="move":
+            elif cmd.group(2)=="stalk": stalk(cmd.group(3))
+            elif cmd.group(2)=="help": msend("!stalk <player>: Last activity from player; !info <ip>: Server information for IP; !snowman: Advice")
+            elif cmd.group(2)=="info": info(cmd.group(3))
+            elif cmd.group(2)=="move" and cmd.group(1)==ADMIN:
                 esend("PART "+CHAN)
                 CHAN = cmd.group(2)
                 esend("JOIN "+CHAN)
-            elif cmd.group(1)=="nick": esend("NICK "+cmd.group(2))
+            elif cmd.group(2)=="nick" and cmd.group(1)==ADMIN: esend("NICK "+cmd.group(3))
