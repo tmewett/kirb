@@ -12,13 +12,14 @@ def msend(message):
 def stalk(player):
     try:
         p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % player).read().decode())
-        msend("%s was last on KAG at %s, on server %s" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], p['playerStatus']['server']['serverIPv4Address']))
-    except urllib.request.HTTPError: msend("Can't find user!")
+        s = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % p['playerStatus']['server']['serverIPv4Address']).read().decode())
+        msend("%s was last on KAG at %s, on %s (%s)" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], s['serverStatus']['serverName'], p['playerStatus']['server']['serverIPv4Address']))
+    except: msend("Can't find user!")
 def info(ip):
     try:
         p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % ip).read().decode())
         msend("%s has %s/%s connected players and is running %s" % (p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
-    except urllib.request.HTTPError: msend("Can't find server!")
+    except: msend("Can't find server!")
 
 HOST="fr.quakenet.org"
 PORT=6667
