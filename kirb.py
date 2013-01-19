@@ -3,11 +3,10 @@ import urllib.request
 import json
 import re
 
-##### SETTINGS #####
-HOST="fr.quakenet.org" # IRC server host
-PORT=6667 # IRC port
-CHAN="#bow@bots" # Channel to join
-ADMIN="tmewett" # User who can use administrative commands
+f = open("kirb.cfg.txt", "r")
+for l in f.readlines():
+    exec(l.strip())
+f.close()
 
 def esend(message):
     message += "\r\n"

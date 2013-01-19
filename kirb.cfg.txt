@@ -1,0 +1,5 @@
+##### SETTINGS #####
+HOST="fr.quakenet.org" # IRC server host
+PORT=6667 # IRC port
+CHAN="#bow@bots" # Channel to join
+ADMIN="tmewett" # User who can use administrative commands
