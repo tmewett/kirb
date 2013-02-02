@@ -3,33 +3,32 @@ import urllib.request
 import json
 import re
 
-f = open("kirb.cfg.txt", "r")
-for l in f.readlines():
-    exec(l.strip())
-f.close()
+with open("kirb.cfg.txt", "r") as f:
+    for l in f.readlines():
+        exec(l.strip())
 
 def esend(message):
     message += "\r\n"
     s.sendall(message.encode())
 def msend(message):
-    message = "PRIVMSG %s :%s\r\n" % (CHAN, message)
+    message = "PRIVMSG {} :{}\r\n".format(CHAN, message)
     s.sendall(message.encode())
 def stalk(player):
     try:
-        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/%s/status" % player).read().decode())
-        s = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % p['playerStatus']['server']['serverIPv4Address']).read().decode())
-        msend("%s was last on KAG at %s, on %s (%s)" % (p['playerInfo']['username'], p['playerStatus']['lastUpdate'], s['serverStatus']['serverName'], p['playerStatus']['server']['serverIPv4Address']))
+        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/player/{}/status".format(player)).read().decode())
+        s = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/{}/port/50301/status".format(p['playerStatus']['server']['serverIPv4Address'])).read().decode())
+        msend("{} was last on KAG at {}, on {} ({})".format(p['playerInfo']['username'], p['playerStatus']['lastUpdate'], s['serverStatus']['serverName'], p['playerStatus']['server']['serverIPv4Address']))
     except: msend("Can't find user!")
 def info(ip):
     try:
-        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/%s/port/50301/status" % ip).read().decode())
-        msend("%s has %s/%s connected players and is running %s" % (p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
+        p = json.loads(urllib.request.urlopen("https://api.kag2d.com/server/ip/{}/port/50301/status".format(ip)).read().decode())
+        msend("{} has {}/{} connected players and is running {}".format(p['serverStatus']['serverName'], p['serverStatus']['currentPlayers'], p['serverStatus']['maxPlayers'], p['serverStatus']['gameMode']))
     except: msend("Can't find server!")
 
 s=socket.socket()
 s.connect((HOST, PORT))
 esend("NICK kirbot")
-esend("USER kirb %s bla :tmewett/kirb" % HOST)
+esend("USER kirb {} bla :tmewett/kirb".format(HOST))
 print("Logged in.")
 readbuffer=""
 while 1:
@@ -40,11 +39,11 @@ while 1:
         line=line.rstrip()
 #       print(line)
         if line[0:4]=="PING":
-            esend("PONG %s" % line[6:])
+            esend("PONG "+line[6:])
             print("Sent PONG.")
         elif "/MOTD" in line:
-            esend('JOIN '+CHAN)
-            print("Joining %s..." % CHAN)
+            esend("JOIN "+CHAN)
+            print("Joining {}...".format(CHAN))
         elif ':!' in line:
             cmd = re.search(r"^:([^!]+)!.+?:!(\w+) ?(.+)?$", line)
             if cmd==None: pass
